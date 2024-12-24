@@ -4,11 +4,16 @@
 node_modules/
 npm-debug.log*
 yarn-error.log*
+electron-app/node_modules/
+
 
 # Environment variables and Python virtual environments
 .env
 venv/
+.venv/
 __pycache__/
+ml-model/venv/
+
 
 # Build outputs
 dist/
@@ -18,3 +23,7 @@ build/
 .DS_Store
 Thumbs.db
 
+# Ignore binaries and large libraries
+*.dylib
+*.so
+*.app

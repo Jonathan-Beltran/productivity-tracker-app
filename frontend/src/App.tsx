@@ -1,9 +1,20 @@
 import React from 'react';
 
 const App: React.FC = () => {
-    return <h1>my app</h1>;
+    return (
+        <div className="app">
+            <Welcome />
+        </div>
+    )
 };
 
+function Welcome(){
+    return(
+        <div className="welcome">
+            <h1>Welcome.</h1>
+        </div>
+    );
+}
 
 
 

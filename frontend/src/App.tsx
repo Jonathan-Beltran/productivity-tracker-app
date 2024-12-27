@@ -1,11 +1,13 @@
 import React from 'react';
 import './App.css'
+import GoalInput from './components/GoalInput';
 
 const App: React.FC = () => {
     return (
         <div className="app">
             <Welcome />
             <GoalPrompt />
+            <GoalInput />
         </div>
     )
 };
@@ -25,6 +27,7 @@ function GoalPrompt(){
         </div>
     );
 }
+
 
 
 

@@ -5,6 +5,7 @@ const App: React.FC = () => {
     return (
         <div className="app">
             <Welcome />
+            <GoalPrompt />
         </div>
     )
 };
@@ -12,7 +13,15 @@ const App: React.FC = () => {
 function Welcome(){
     return(
         <div className="welcome">
-            <h1>Welcome.</h1>
+            <h1>Welcome. Let's lock in.</h1>
+        </div>
+    );
+}
+
+function GoalPrompt(){
+    return(
+        <div className="goal-prompt">
+            <h2>Enter your current goal. <br></br>(ie. I want to learn how to cook, I want to master discrete structures, I want to be rich.)</h2>
         </div>
     );
 }

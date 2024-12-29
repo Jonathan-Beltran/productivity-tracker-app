@@ -1,3 +1,5 @@
+
+import  { createDatabase } from '../../backend/src/database';
 const { app, BrowserWindow } = require('electron');
 function createWindow(){
     const win = new BrowserWindow({
@@ -12,7 +14,10 @@ function createWindow(){
         win.webContents.openDevTools();
     });
 }
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createDatabase();
+    createWindow();
+});
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin'){
         app.quit();

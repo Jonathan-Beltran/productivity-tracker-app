@@ -1,11 +1,17 @@
-import sqlite3 from 'sqlite3';
+
+import * as sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
+console.log("index.ts has been loaded"); //execute as soon as something imports
 sqlite3.verbose();
-const dbPath = path.resolve(__dirname, './database/user_database.sqlite');
-
-
+const dbDir = path.resolve(os.homedir(), '.myapp/database');
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+const dbPath = path.join(dbDir, 'user_db.sqlite');
+console.log("Resolved path: ", dbPath); //should print resolved path
 
 function createDatabase(): void{
     if(!fs.existsSync(dbPath)){
@@ -14,16 +20,34 @@ function createDatabase(): void{
             if(err){
                 console.error('Error creating database', err.message);
             } else {
-                    //start here, create these databases
                 db.serialize(() => {
-                    db.run('CREATE TABLE IF NOT EXISTS goals (id INTEGER PRIMARY KEY AUTOINCREMENT, goal TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deleted_at TIMESTAMP)');
-                    db.run('CREATE TABLE IF NOT EXISTS data_activity (id INTEGER PRIMARY KEY AUTOINCREMENT, activity_type TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)');
-                    db.run('CREATE TABLE IF NOT EXISTS screenshots (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deleted_at TIMESTAMP)');
+                    db.run('CREATE TABLE IF NOT EXISTS goals (id INTEGER PRIMARY KEY AUTOINCREMENT, goal TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deleted_at TIMESTAMP)', (err: Error | null) => {
+                        if(err){
+                            console.error('Error creating goals table', err.message);
+                        }
+                    });
+                    db.run('CREATE TABLE IF NOT EXISTS data_activity (id INTEGER PRIMARY KEY AUTOINCREMENT, activity_type TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)', (err: Error | null) => {
+                        if(err){
+                            console.error('Error creating data_activity table', err.message);
+                        }
+                    });
+                    db.run('CREATE TABLE IF NOT EXISTS screenshots (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deleted_at TIMESTAMP)', (err: Error | null) => {
+                        if(err){
+                            console.error('Error creating screenshot table', err.message);
+                        }
+                    });
                 });
-                console.log("Database created successfully");
-                
+                db.close((err: Error | null) => {
+                    if(err){
+                        console.error('Error closing database', err.message);
+                    } else {
+                        console.log('Database created successfully');
+                    }
+                });
             }
         });
+    } else {
+        console.log("Database already exists. No need to create one");
     }
 }
 export {createDatabase};

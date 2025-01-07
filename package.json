@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1"
   }
 }

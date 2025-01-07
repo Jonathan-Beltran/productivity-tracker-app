@@ -1,6 +1,10 @@
 
-import  { createDatabase } from '../../backend/src/database';
+console.log("Electron main process starting");
+import  { createDatabase } from '../../backend/dist/database';
 const { app, BrowserWindow } = require('electron');
+/*debugging stuff */
+/*end debugging stuff */
+
 function createWindow(){
     const win = new BrowserWindow({
         width: 800,
@@ -17,6 +21,7 @@ function createWindow(){
 app.on('ready', () => {
     createDatabase();
     createWindow();
+    console.log("App is ready");
 });
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin'){

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { addGoal } from '../../../backend/dist/database';
 import '../App.css';
 
 const GoalInput = () => {
@@ -7,6 +8,15 @@ const GoalInput = () => {
         setGoal(event.target.value)
     }
     const saveGoal = () => {
+        addGoal(goal, (err, newGoal) => {
+            if(err){
+                console.error('Error adding goal', err.message);
+            } else {
+                console.log('Goal added successfully', newGoal);
+                setGoal('');
+                // functionality here to display the newly added goal on the screen
+            }
+        });
         console.log(goal);
     }
 

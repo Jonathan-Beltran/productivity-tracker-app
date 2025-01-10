@@ -37,19 +37,19 @@ function createDatabase(): void{
                             console.error('Error creating screenshot table', err.message);
                         }
                     });
+                    db.run('INSERT INTO data_activity (activity_type) VALUES (?)', ['database_created'], function (err: Error | null) {
+                        if(err){
+                            console.error('Error logging data_activity', err.message);
+                        } else {
+                            console.log('Logged data activity successfully with id: ', this.lastID);
+                        }
+                    });
                 });
                 db.close((err: Error | null) => {
                     if(err){
                         console.error('Error closing database', err.message);
                     } else {
                         console.log('Database created successfully');
-                        db.run('INSERT INTO data_activity (activity_type) VALUES (?)', ['database_created'], function (err: Error | null) {
-                            if(err){
-                                console.error('Error logging data_activity', err.message);
-                            } else {
-                                console.log('Logged data activity successfully with id: ', this.lastID);
-                            }
-                        });
                     }
                 });
             }
@@ -59,7 +59,7 @@ function createDatabase(): void{
     }
 }
 
-function addGoal(goal: string): void{
+function addGoal(goal: string, callback: (err: Error | null, newGoal?: { id: number; goal: string; created_at: string}) => void): void{
     const db = new sqlite3.Database(dbPath, (err: Error | null) => {
         if(err){
             console.error("Error opening database", err.message);
@@ -67,6 +67,7 @@ function addGoal(goal: string): void{
             db.run('INSERT INTO goals (goal) VALUES (?)', [goal], function (err: Error | null) {
                 if(err){
                     console.error('Error adding goal', err.message);
+                    callback(err);
                 } else {
                     console.log('Goal added successfully with id: ', this.lastID);
                     db.run('INSERT INTO data_activity (activity_type) VALUES (?)', ['goal_added'], function (err: Error | null) {
@@ -76,6 +77,14 @@ function addGoal(goal: string): void{
                             console.log('Logged data activity successfully with id: ', this.lastID);
                         }
                     });
+                    db.get('SELECT id, goal, created_at FROM goals WHERE id = ?', [this.lastID], (err: Error | null, row: { id: number; goal: string; created_at: string}) => {
+                        if (err) {
+                            console.error('Error fetching new goal', err.message);
+                            callback(err);
+                        } else {
+                            callback(null, row);
+                        }
+                    })
                 }
             });
         }

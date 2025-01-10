@@ -3,6 +3,7 @@ import * as sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import e from 'express';
 
 console.log("index.ts has been loaded"); //execute as soon as something imports
 sqlite3.verbose();
@@ -42,6 +43,13 @@ function createDatabase(): void{
                         console.error('Error closing database', err.message);
                     } else {
                         console.log('Database created successfully');
+                        db.run('INSERT INTO data_activity (activity_type) VALUES (?)', ['database_created'], function (err: Error | null) {
+                            if(err){
+                                console.error('Error logging data_activity', err.message);
+                            } else {
+                                console.log('Logged data activity successfully with id: ', this.lastID);
+                            }
+                        });
                     }
                 });
             }
@@ -50,4 +58,30 @@ function createDatabase(): void{
         console.log("Database already exists. No need to create one");
     }
 }
+
+function addGoal(goal: string): void{
+    const db = new sqlite3.Database(dbPath, (err: Error | null) => {
+        if(err){
+            console.error("Error opening database", err.message);
+        } else {
+            db.run('INSERT INTO goals (goal) VALUES (?)', [goal], function (err: Error | null) {
+                if(err){
+                    console.error('Error adding goal', err.message);
+                } else {
+                    console.log('Goal added successfully with id: ', this.lastID);
+                    db.run('INSERT INTO data_activity (activity_type) VALUES (?)', ['goal_added'], function (err: Error | null) {
+                        if(err){
+                            console.error('Error logging data_activity', err.message);
+                        } else {
+                            console.log('Logged data activity successfully with id: ', this.lastID);
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
+
 export {createDatabase};
+export {addGoal};

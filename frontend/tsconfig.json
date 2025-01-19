@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@backend/*": ["../backend/dist/*"]
+    },
     "target": "es5",
     "lib": [
       "dom",

@@ -1,7 +1,18 @@
 import { useState } from 'react';
 import '../App.css';
 
-const GoalInput = () => {
+type Goal = {
+    id: number;
+    goal: string;
+    created_at: string;
+};
+
+type GoalInputProps = {
+    addGoal: (newGoal: Goal) => void;
+};
+
+
+const GoalInput: React.FC<GoalInputProps> = ({ addGoal }) => {
     const [goal, setGoal] = useState('');
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGoal(event.target.value)
@@ -22,9 +33,8 @@ const GoalInput = () => {
             }
 
             const newGoal = await response.json();
-            console.log('Goal saved successfully', newGoal);
+            addGoal(newGoal);
             setGoal('');
-            //functionality for goal display here
 
 
         } catch (err: any) {

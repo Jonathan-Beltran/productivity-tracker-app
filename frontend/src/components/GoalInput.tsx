@@ -20,7 +20,7 @@ const GoalInput: React.FC<GoalInputProps> = ({ addGoal }) => {
 
     const saveGoal = async () => {
         try {  
-            const response = await fetch('http://localhost:5000/add-goal', {
+            const response = await fetch('http://localhost:4000/add-goal', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

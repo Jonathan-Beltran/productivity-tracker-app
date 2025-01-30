@@ -1,9 +1,15 @@
 import express from 'express';
 import {createDatabase, addGoal, deleteGoal} from '../database/index';
 const app = express();
-const port =  5000;
-
+const cors = require('cors');
+const port =  4000;
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: 'Content-Type, Authorization'
+}));
 app.use(express.json());
+app.options('*', cors());
 
 app.post('/add-goal', (req, res) => {
     const { goal } = req.body;
@@ -19,4 +25,4 @@ app.delete('/delete-goal/:id', (req, res) => {
     res.status(200).send('goal deleted');
 });
 
-app.listen(5000, () => console.log('backend running on port 5000'));
+app.listen(4000, () => console.log('backend running on port 4000'));

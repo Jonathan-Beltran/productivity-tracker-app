@@ -1,6 +1,8 @@
 
 console.log("Electron main process starting");
 import  { createDatabase } from '../../backend/dist/database';
+import { ipcMain } from 'electron'
+import { getGoals } from '../../backend/src/database/index'
 const { app, BrowserWindow } = require('electron');
 /*debugging stuff */
 /*end debugging stuff */
@@ -33,3 +35,8 @@ app.on('activate',() =>{
         createWindow();
     }
 });
+
+ipcMain.handle('get-data', async() => {
+    const data = await getGoals()
+    return data
+})

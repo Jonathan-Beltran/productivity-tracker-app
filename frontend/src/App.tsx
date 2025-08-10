@@ -23,7 +23,7 @@ function Welcome(){
 function GoalPrompt(){
     return(
         <div className="goal-prompt">
-            <h2>Enter your current goal. <br></br>(ie. I want to learn how to cook, I want to master discrete structures, I want to be rich.)</h2>
+            <h2> Create any goal, or select an existing one. <br></br>(ie. I want to learn how to cook.)</h2>
         </div>
     );
 }

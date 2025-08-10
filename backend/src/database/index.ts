@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-console.log("index.ts has been loaded"); //execute as soon as something imports
+//console.log("index.ts has been loaded"); //execute as soon as something imports
 sqlite3.verbose();
 const dbDir = path.resolve(os.homedir(), '.myapp/database');
 if (!fs.existsSync(dbDir)) {
@@ -12,6 +12,7 @@ if (!fs.existsSync(dbDir)) {
 }
 const dbPath = path.join(dbDir, 'user_db.sqlite');
 console.log("Resolved path: ", dbPath); //should print resolved path
+
 
 function createDatabase(): void{
     if(!fs.existsSync(dbPath)){
@@ -83,6 +84,7 @@ function addGoal(goal: string, callback: (err: Error | null, newGoal?: { id: num
                         } else {
                             callback(null, row);
                         }
+                        db.close()
                     })
                 }
             });
@@ -106,6 +108,7 @@ function deleteGoal(id: number){
                         } else {
                             console.log('Logged data activity (goal_marked_as_deleted) successfully with id: ', this.lastID);
                         }
+                        db.close()
                     });
                 }
             });
@@ -113,7 +116,30 @@ function deleteGoal(id: number){
     })
 }
 
+function getGoals(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database(dbPath, (err: Error | null) => {
+            if(err){
+                console.error("Error opening database for getGoals", err.message);
+                reject(err)
+                return
+            }
+            db.all(
+                'SELECT id, goal, created_at, deleted_at FROM goals', (err, rows) => {
+                if (err) {
+                    console.log("Query failed in getGoal", err.message);
+                    reject(err);
+                } else {
+                    resolve(rows)
+                }
+                db.close()
+            })
+        })
+    })
+}
+
+
 export { addGoal, deleteGoal };
 
 
-export {createDatabase};
+export {createDatabase, getGoals};

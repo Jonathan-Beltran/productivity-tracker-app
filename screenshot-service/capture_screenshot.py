@@ -52,8 +52,8 @@ def capture_screenshot():
                 except Exception as e:
                     print(f"Error capturing screenshot: {e}")
                     time.sleep(60)
-            except KeyboardInterrupt:
-                print("\nScreenshot service stopped")
+        except KeyboardInterrupt:
+            print("\nScreenshot service stopped")
 
 if __name__ == '__main__':
     capture_screenshot()

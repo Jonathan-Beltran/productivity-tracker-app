@@ -2,7 +2,7 @@
   "name": "electron-app",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/main.js",
+  "main": "./dist/electron-app/src/main.js",
   "scripts": {
     "electron": "electron .",
     "build": "tsc",

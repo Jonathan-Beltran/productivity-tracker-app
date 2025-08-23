@@ -1,8 +1,8 @@
 
 console.log("Electron main process starting");
-import  { createDatabase } from '../../backend/dist/database';
+import  { createDatabase } from '../../../../backend/dist/database';
 import { ipcMain } from 'electron'
-import { getGoals } from '../../backend/src/database/index'
+import { getGoals } from '../../../../backend/src/database/index'
 import { spawn, ChildProcess } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -15,11 +15,14 @@ function createWindow(){
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: false,
+            contextIsolation: true,
+            webSecurity: false,
+            preload: path.join(__dirname, 'preload.js')
         }
     });
     win.loadURL('http://localhost:3000');
-    win.webContents.once('did-finish-load', () => {
+       win.webContents.once('did-finish-load', () => {
         win.webContents.openDevTools();
     });
     return win;
@@ -27,7 +30,7 @@ function createWindow(){
 
 function startScreenshotService(){
     console.log("Starting screenshot service");
-    const screenshotServicePath = path.join(__dirname, '../../../screenshot-service');
+    const screenshotServicePath = path.join(__dirname, '../../../../screenshot-service');
     const pythonScript = path.join(screenshotServicePath, 'capture_screenshot.py');
     const venvPython = path.join(screenshotServicePath, 'venv', 'bin', 'python');
 
@@ -95,4 +98,10 @@ ipcMain.handle('screenshot-service-status', () => {
         running: screenshotProcess !== null,
         pid: screenshotProcess?.pid || null
     };
+});
+
+ipcMain.handle('restart-screenshot-service', () => {
+    stopScreenshotService();
+    setTimeout(startScreenshotService, 1000);
+    return true;
 });
